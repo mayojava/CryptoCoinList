@@ -15,9 +15,9 @@ data class CoinData(
     val id: Int,
     val name: String,
     val symbol: String,
-    val max_supply: Int,
-    val circulating_supply: Int,
-    val total_supply: Int,
+    val max_supply: Double,
+    val circulating_supply: Double,
+    val total_supply: Double,
     val quote: Quote
 )
 

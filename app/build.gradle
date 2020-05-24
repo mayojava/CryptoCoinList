@@ -16,7 +16,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "API_URL", "\"https://pro-api.coinmarketcap.com/v1/cryptocurrency/\""
-        buildConfigField "String", "API_KEY", "\"235f3fb1-0370-40ff-8ea5-b2fb6501859e&limit\""
+        buildConfigField "String", "API_KEY", "\"235f3fb1-0370-40ff-8ea5-b2fb6501859e\""
     }
 
     buildTypes {

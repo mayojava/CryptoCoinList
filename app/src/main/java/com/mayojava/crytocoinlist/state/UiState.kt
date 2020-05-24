@@ -7,3 +7,5 @@ sealed class UiState<out T> {
     data class Error(val exception: Exception): UiState<Nothing>()
     data class Success<out T>(val data: T): UiState<T>()
 }
+
+fun <T> UiState<T>.isLoading() = this is UiState.Loading

@@ -1,6 +1,7 @@
 package com.mayojava.crytocoinlist
 
 import com.mayojava.crytocoinlist.api.WebService
+import com.mayojava.crytocoinlist.api.dispatchers.CoroutineDispatchers
 import com.mayojava.crytocoinlist.api.dispatchers.DispatchersImpl
 import com.mayojava.crytocoinlist.api.repository.CryptoListRepository
 import com.mayojava.crytocoinlist.api.repository.CryptoListRepositoryImpl
@@ -15,6 +16,8 @@ object Injector {
 
     fun createRepository(): CryptoListRepository =
         CryptoListRepositoryImpl(createWebservice(), DispatchersImpl())
+
+    fun dispatcher(): CoroutineDispatchers = DispatchersImpl()
 
     private fun createWebservice(): WebService {
         return createRetrofit()

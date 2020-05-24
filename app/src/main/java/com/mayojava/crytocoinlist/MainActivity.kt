@@ -3,6 +3,7 @@ package com.mayojava.crytocoinlist
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.Composable
+import androidx.lifecycle.lifecycleScope
 import androidx.ui.core.setContent
 import androidx.ui.material.MaterialTheme
 import androidx.ui.tooling.preview.Preview
@@ -15,7 +16,7 @@ class MainActivity : AppCompatActivity() {
             MaterialTheme(
                 colors = lightThemeColors
             ) {
-                CoinsListScreen(Injector.createRepository())
+                CoinsListScreen(Injector.createRepository(), lifecycleScope)
             }
         }
     }
@@ -25,6 +26,6 @@ class MainActivity : AppCompatActivity() {
 @Composable
 fun DefaultPreview() {
     MaterialTheme {
-        CoinsListScreen(Injector.createRepository())
+        //CoinsListScreen(Injector.createRepository())
     }
 }
