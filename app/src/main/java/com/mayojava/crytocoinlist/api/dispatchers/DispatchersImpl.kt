@@ -1,6 +1,5 @@
 package com.mayojava.crytocoinlist.api.dispatchers
 
-import com.mayojava.crytocoinlist.api.dispatchers.CoroutineDispatchers
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
