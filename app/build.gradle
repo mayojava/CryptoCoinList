@@ -15,8 +15,8 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField "API_URL", "String", "\"https://pro-api.coinmarketcap.com/v1/cryptocurrency/\""
-        buildConfigField "API_KEY", "String", "\"235f3fb1-0370-40ff-8ea5-b2fb6501859e&limit\""
+        buildConfigField "String", "API_URL", "\"https://pro-api.coinmarketcap.com/v1/cryptocurrency/\""
+        buildConfigField "String", "API_KEY", "\"235f3fb1-0370-40ff-8ea5-b2fb6501859e&limit\""
     }
 
     buildTypes {
@@ -63,6 +63,7 @@ dependencies {
     //Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.7.2'
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
