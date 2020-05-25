@@ -11,7 +11,6 @@ import androidx.ui.material.*
 import androidx.ui.material.ripple.ripple
 import androidx.ui.text.TextStyle
 import androidx.ui.text.font.FontWeight
-import androidx.ui.unit.TextUnit
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
 import com.mayojava.crytocoinlist.Injector
@@ -19,6 +18,7 @@ import com.mayojava.crytocoinlist.api.CoinData
 import com.mayojava.crytocoinlist.api.repository.CryptoListRepository
 import com.mayojava.crytocoinlist.lightThemeColors
 import com.mayojava.crytocoinlist.state.UiState
+import com.mayojava.crytocoinlist.util.getChangeInPriceColor
 import com.mayojava.crytocoinlist.util.getRandomColor
 import kotlinx.coroutines.CoroutineScope
 
@@ -35,53 +35,137 @@ fun CoinsListScreen(repository: CryptoListRepository, scope: CoroutineScope) {
 }
 
 @Composable
-private fun ScreenContent(repository: CryptoListRepository, scope: CoroutineScope, modifier: Modifier) {
+private fun ScreenContent(
+    repository: CryptoListRepository,
+    scope: CoroutineScope,
+    modifier: Modifier
+) {
     val uistate: UiState<List<CoinData>> = loadUiState(
         repository = repository,
         dispatchers = Injector.dispatcher(),
         scope = scope
     )
 
-    when(uistate) {
+    when (uistate) {
         is UiState.Loading -> LoadingView()
-        is UiState.Success -> ShowCoinsList(uistate.data)
+        is UiState.Success -> ShowCoinsList(uistate.data, modifier)
     }
 }
 
 @Composable
-private fun ShowCoinsList(data: List<CoinData>) {
-    AdapterList(data = data) {
-        Column(modifier = Modifier.fillMaxWidth()) {
+private fun ShowCoinsList(data: List<CoinData>, modifier: Modifier = Modifier) {
+    Stack {
+        Box(modifier = Modifier.fillMaxSize(), backgroundColor = Color.Black.copy(alpha = 0.5f))
+        AdapterList(
+            data = data,
+            modifier = Modifier.padding(
+                start = 16.dp,
+                end = 16.dp
+            )
+                .plus(modifier)
+        ) {
             ListItem(coinData = it)
-            Divider(color = lightThemeColors.onSurface.copy(alpha = 0.08f))
         }
     }
 }
 
 @Composable
 private fun ListItem(coinData: CoinData) {
-    Clickable(
-        onClick = {},
-        modifier = Modifier.ripple()
+    Card(
+        elevation = 2.dp,
+        modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 8.dp, start = 16.dp, end = 16.dp),
-            verticalGravity = Alignment.CenterVertically
+        Clickable(
+            onClick = {},
+            modifier = Modifier.ripple()
         ) {
-            CoinSymbol(symbol = coinData.symbol)
-            Spacer(modifier = Modifier.size(16.dp))
-            CoinNameAndPrice(coinData = coinData)
+            Row(
+                modifier = Modifier.fillMaxWidth()
+                    .padding(top = 8.dp, bottom = 8.dp, start = 16.dp, end = 16.dp),
+                verticalGravity = Alignment.CenterVertically
+            ) {
+                CoinSymbol(symbol = coinData.symbol)
+                Spacer(modifier = Modifier.size(16.dp))
+                CoinInfo(coinData = coinData)
+            }
         }
     }
 }
 
 @Composable
-private fun CoinNameAndPrice(coinData: CoinData) {
-    Column {
+private fun CoinInfo(coinData: CoinData) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalGravity = Alignment.Top,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        CoinNameAndPrice(coinData = coinData, modifier = Modifier.weight(1.0f))
+        Last1hrCoinPrice(
+            price = coinData.quote.USD.percent_change_1h,
+            modifier = Modifier.weight(1.0f)
+        )
+        Last24hrCoinPrice(
+            price = coinData.quote.USD.percent_change_24h,
+            modifier = Modifier.weight(1.0f)
+        )
+    }
+}
+
+@Composable
+private fun Last1hrCoinPrice(price: Double, modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
+        ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
+            Text(
+                text = "Last 1hr",
+                style = MaterialTheme.typography.h6.copy(fontSize = 16.sp),
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+        }
+
+        ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+            Text(
+                text = String.format("%.2f%%", price),
+                color = getChangeInPriceColor(price),
+                style = MaterialTheme.typography.subtitle1.copy(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Composable
+private fun Last24hrCoinPrice(price: Double, modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
+        ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
+            Text(
+                text = "Last 24hr",
+                style = MaterialTheme.typography.h6.copy(fontSize = 16.sp),
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+        }
+
+        ProvideEmphasis(emphasis = EmphasisAmbient.current.medium) {
+            Text(
+                text = String.format("%.2f%%", price),
+                color = getChangeInPriceColor(price),
+                style = MaterialTheme.typography.subtitle1.copy(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            )
+        }
+    }
+}
+
+@Composable
+private fun CoinNameAndPrice(coinData: CoinData, modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
         ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
             Text(
                 text = coinData.name,
-                style = MaterialTheme.typography.subtitle1,
+                style = MaterialTheme.typography.h6.copy(fontSize = 16.sp),
                 modifier = Modifier.padding(bottom = 4.dp)
             )
         }
@@ -90,7 +174,10 @@ private fun CoinNameAndPrice(coinData: CoinData) {
             val price = String.format("%.2f", coinData.quote.USD.price)
             Text(
                 text = "$$price",
-                style = MaterialTheme.typography.subtitle2.copy(fontSize = 12.sp)
+                style = MaterialTheme.typography.subtitle1.copy(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium
+                )
             )
         }
     }

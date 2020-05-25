@@ -29,3 +29,5 @@ fun getRandomColor(): Color {
     val index = Random.nextInt(colors.size)
     return colors[index]
 }
+
+fun getChangeInPriceColor(price: Double): Color = if (price < 0.0) Color.Red else Color.Green
