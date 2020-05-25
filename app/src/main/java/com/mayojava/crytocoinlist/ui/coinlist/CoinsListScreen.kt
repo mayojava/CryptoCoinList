@@ -1,7 +1,9 @@
 package com.mayojava.crytocoinlist.ui.coinlist
 
+import android.widget.Toast
 import androidx.compose.Composable
 import androidx.ui.core.Alignment
+import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.*
 import androidx.ui.foundation.shape.corner.CircleShape
@@ -49,6 +51,7 @@ private fun ScreenContent(
     when (uistate) {
         is UiState.Loading -> LoadingView()
         is UiState.Success -> ShowCoinsList(uistate.data, modifier)
+        is UiState.Error -> Toast.makeText(ContextAmbient.current, "Error occurred. Check if API key is added.", Toast.LENGTH_SHORT).show()
     }
 }
 

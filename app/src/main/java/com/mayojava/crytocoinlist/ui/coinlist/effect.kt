@@ -21,8 +21,12 @@ fun <T> loadUiState(
 
     onActive {
         scope.launch(dispatchers.main) {
-            val data = repository.getCryptoList()
-            state = UiState.Success(data = data as T)
+            state = try {
+                val data = repository.getCryptoList()
+                UiState.Success(data = data as T)
+            } catch (e: Exception) {
+                UiState.Error(e)
+            }
         }
     }
 
